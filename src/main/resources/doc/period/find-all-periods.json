@@ -1,0 +1,31 @@
+{
+  "description": "Servicio para obtener todos los periodos",
+  "authorization": false,
+  "responseOk": {
+    "timestamp": "07-11-2021  16:43:29 p. m.",
+    "status": 200,
+    "data": [
+      {
+        "uuid": "5007bf6c-ad45-4665-b634-4b49339b17ba",
+        "date": "2021-08-01T05:00:00.000+00:00",
+        "biweekly": 13800,
+        "debt": 200,
+        "freeMoney": 27600,
+        "remainingDebt": 200
+      }
+    ]
+  },
+  "responseUnauthorized": {
+    "timestamp": "11-20-2020  16:53:53 p. m.",
+    "status": 401,
+    "error": "UNAUTHORIZED",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  }
+}

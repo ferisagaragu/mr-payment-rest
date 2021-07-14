@@ -1,5 +1,8 @@
 package org.pechblenda.mrpaymentrest.entity
 
+import org.pechblenda.service.annotation.Key
+import org.pechblenda.service.enum.DefaultValue
+
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -7,10 +10,11 @@ import javax.persistence.Table
 import javax.persistence.Id
 import javax.persistence.OneToMany
 
-import java.util.UUID
+import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.util.Calendar
 import java.util.Date
-import org.pechblenda.service.annotation.Key
-import org.pechblenda.service.enum.DefaultValue
+import java.util.UUID
 
 @Entity
 @Table(name = "period")
@@ -66,6 +70,24 @@ class Period(
 	@Key(name = "biweekly", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
 	fun biweekly(): Double {
 		return freeMoney() / 2
+	}
+
+	@Key(name = "enable", autoCall = true, defaultNullValue = DefaultValue.BOOLEAN)
+	fun enable(): Boolean {
+		val date = this.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+		val startMonthText = "15/${date.monthValue}/${date.year}"
+		val endMonth = SimpleDateFormat("dd/MM/yyyy").parse(startMonthText)
+		val endMonthCalendar = Calendar.getInstance()
+
+		endMonthCalendar.isLenient = false
+		endMonthCalendar.time = endMonth
+		endMonthCalendar.add(Calendar.MONTH, 1)
+
+		if (Date() >= endMonth && Date() <= endMonthCalendar.time) {
+			return true
+		}
+
+		return false
 	}
 
 }

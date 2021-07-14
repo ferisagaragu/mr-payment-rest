@@ -1,11 +1,11 @@
 package org.pechblenda.mrpaymentrest.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 import java.util.UUID
 
 import org.pechblenda.mrpaymentrest.entity.Payment
-import org.springframework.data.jpa.repository.Query
 
 interface IPaymentRepository: JpaRepository<Payment, UUID> {
 

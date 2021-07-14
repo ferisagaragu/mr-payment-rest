@@ -3,6 +3,7 @@ package org.pechblenda.mrpaymentrest.controller
 import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.mrpaymentrest.service.`interface`.IPaymentService
 import org.pechblenda.service.Request
+import org.pechblenda.doc.annotation.ApiDocumentation
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -16,23 +17,26 @@ import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PutMapping
 
 import java.util.UUID
 
 @CrossOrigin(methods = [
 	RequestMethod.GET,
 	RequestMethod.POST,
+	RequestMethod.PUT,
 	RequestMethod.PATCH,
 	RequestMethod.DELETE
 ])
 @RestController
-@RequestMapping(value = ["/rest/payment"])
+@RequestMapping(name = "Payment", value = ["/rest/payments"])
 class PaymentController(
 	private val paymentService: IPaymentService,
 	private val httpExceptionResponse: HttpExceptionResponse,
 ) {
 
 	@GetMapping("/{periodUuid}")
+	@ApiDocumentation(path = "doc/payment/find-all-payments-by-period-uuid.json")
 	fun findAllPaymentsByPeriodUuid(
 		@PathVariable periodUuid: UUID
 	): ResponseEntity<Any> {
@@ -44,6 +48,7 @@ class PaymentController(
 	}
 
 	@PostMapping
+	@ApiDocumentation(path = "doc/payment/create-payment.json")
 	fun createPayment(
 		@RequestBody request: Request
 	): ResponseEntity<Any> {
@@ -54,7 +59,20 @@ class PaymentController(
 		}
 	}
 
+	@PutMapping
+	@ApiDocumentation(path = "doc/payment/update-payment.json")
+	fun updatePayment(
+		@RequestBody request: Request
+	): ResponseEntity<Any> {
+		return try {
+			paymentService.updatePayment(request)
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
 	@PatchMapping
+	@ApiDocumentation(path = "doc/payment/set-payment-paid.json")
 	fun setPaymentPaid(
 		@RequestBody request: Request
 	): ResponseEntity<Any> {
@@ -66,6 +84,7 @@ class PaymentController(
 	}
 
 	@DeleteMapping("/{paymentUuid}")
+	@ApiDocumentation(path = "doc/payment/delete-payment.json")
 	fun deletePayment(
 		@PathVariable paymentUuid: UUID
 	): ResponseEntity<Any> {

@@ -1,0 +1,25 @@
+{
+  "description": "Servicio para poner un pago con estatus de pagado",
+  "authorization": false,
+  "responseOk": {
+    "timestamp": "07-12-2021  14:24:58 p. m.",
+    "status": 200
+  },
+  "responseUnauthorized": {
+    "timestamp": "11-20-2020  16:53:53 p. m.",
+    "status": 401,
+    "error": "UNAUTHORIZED",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  },
+  "requestBody": {
+    "uuid": "",
+    "pay": true
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "description": "Servicio para obtener todos los pagos por UUID del periodo",
+  "authorization": false,
+  "responseOk": {
+    "timestamp": "07-11-2021  16:21:07 p. m.",
+    "status": 200,
+    "data": [
+      {
+        "uuid": "bc5b6a4d-1be6-4399-b14d-f49ec45c6648",
+        "name": "Repetido",
+        "quantity": 150,
+        "startDate": null,
+        "endDate": null,
+        "totalQuantity": null,
+        "createDate": "2021-07-10T01:33:27.852+00:00",
+        "type": 2,
+        "monthCount": null,
+        "pay": false
+      }
+    ]
+  },
+  "responseUnauthorized": {
+    "timestamp": "11-20-2020  16:53:53 p. m.",
+    "status": 401,
+    "error": "UNAUTHORIZED",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  },
+  "pathVariables": [
+    {
+      "name": "periodUuid",
+      "value": "",
+      "type": "text",
+      "required": true
+    }
+  ]
+}

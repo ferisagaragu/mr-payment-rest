@@ -1,10 +1,5 @@
 package org.pechblenda.mrpaymentrest.service
 
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-import java.util.*
-
 import org.pechblenda.exception.BadRequestException
 import org.pechblenda.mrpaymentrest.entity.Payment
 import org.pechblenda.mrpaymentrest.enum.PaymentType
@@ -18,9 +13,15 @@ import org.pechblenda.service.helper.EntityParse
 import org.pechblenda.service.helper.Validation
 import org.pechblenda.service.helper.ValidationType
 import org.pechblenda.service.helper.Validations
+
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 @Service
 class PaymentService(
@@ -77,6 +78,19 @@ class PaymentService(
 	}
 
 	@Transactional
+	override fun updatePayment(request: Request): ResponseEntity<Any> {
+		request.merge<Payment>(
+			EntityParse(
+				"uuid",
+				paymentRepository,
+				IdType.UUID
+			)
+		)
+
+		return response.ok()
+	}
+
+	@Transactional
 	override fun setPaymentPaid(request: Request): ResponseEntity<Any> {
 		val paymentRequest = request.to<Payment>(
 			Payment::class,
@@ -105,7 +119,7 @@ class PaymentService(
 
 		payment.pay = paymentRequest.pay
 
-		return response.created()
+		return response.ok()
 	}
 
 	@Transactional
