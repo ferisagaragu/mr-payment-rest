@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
 import java.util.UUID
+import org.pechblenda.mrpaymentrest.scheduled.PeriodScheduled
 
 @CrossOrigin(methods = [
 	RequestMethod.GET,
@@ -24,6 +25,7 @@ import java.util.UUID
 @RequestMapping(name = "Period", value = ["/rest/periods"])
 class PeriodController(
 	private val periodService: IPeriodService,
+	private val periodScheduled: PeriodScheduled,
 	private val httpExceptionResponse: HttpExceptionResponse,
 ) {
 
@@ -53,7 +55,7 @@ class PeriodController(
 	@ApiDocumentation(path = "doc/period/calculate-next-period.json")
 	fun calculateNextPeriod(): ResponseEntity<Any> {
 		return try {
-			periodService.calculateNextPeriod()
+			periodScheduled.calculateNextPeriod()
 		} catch (e: ResponseStatusException) {
 			httpExceptionResponse.error(e)
 		}

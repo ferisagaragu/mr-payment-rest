@@ -1,11 +1,13 @@
 package org.pechblenda.mrpaymentrest.repository
 
+import org.pechblenda.mrpaymentrest.entity.Payment
+
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 
 import java.util.UUID
-
-import org.pechblenda.mrpaymentrest.entity.Payment
+import java.util.Date
 
 interface IPaymentRepository: JpaRepository<Payment, UUID> {
 
@@ -14,9 +16,24 @@ interface IPaymentRepository: JpaRepository<Payment, UUID> {
 		value =
 			"select pay.* from payment pay " +
 			"inner join period per on pay.period_uuid = per.uuid " +
-			"where pay.type = 2 and to_char(per.date, 'MM/YYYY') = to_char(now(), 'MM/YYYY')"
+			"where pay.type = 3 and " +
+			"to_char(per.date, 'MM/YYYY') = to_char(to_date(:periodDate, 'yyyy-mm-dd'), 'MM/YYYY')"
 	)
-	fun findAllByRecurrentTrue(): List<Payment>
+	fun findAllSaveByPeriodDate(
+		@Param("periodDate") periodDate: Date
+	): List<Payment>
+
+	@Query(
+		nativeQuery = true,
+		value =
+			"select pay.* from payment pay " +
+			"inner join period per on pay.period_uuid = per.uuid " +
+			"where pay.type = 2 and " +
+			"to_char(per.date, 'MM/YYYY') = to_char(to_date(:periodDate, 'yyyy-mm-dd'), 'MM/YYYY')"
+	)
+	fun findAllRecurrentByPeriodDate(
+		@Param("periodDate") periodDate: Date
+	): List<Payment>
 
 	@Query(
 		nativeQuery = true,
@@ -24,9 +41,11 @@ interface IPaymentRepository: JpaRepository<Payment, UUID> {
 			"select pay.* from payment pay " +
 			"inner join period per on pay.period_uuid = per.uuid " +
 			"where pay.type = 1 and pay.month_count > 1 " +
-			"and to_char(per.date, 'MM/YYYY') = to_char(now(), 'MM/YYYY')"
+			"and to_char(per.date, 'MM/YYYY') = to_char(to_date(:periodDate, 'yyyy-mm-dd'), 'MM/YYYY')"
 	)
-	fun findAllByMonthlyTrue(): List<Payment>
+	fun findAllMonthlyByPeriodDate(
+		@Param("periodDate") periodDate: Date
+	): List<Payment>
 
 	@Query(
 		"select payment from Payment payment " +

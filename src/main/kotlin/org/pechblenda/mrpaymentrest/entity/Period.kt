@@ -2,6 +2,7 @@ package org.pechblenda.mrpaymentrest.entity
 
 import org.pechblenda.service.annotation.Key
 import org.pechblenda.service.enum.DefaultValue
+import org.pechblenda.mrpaymentrest.enum.PaymentType
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -44,7 +45,11 @@ class Period(
 	fun debt(): Double {
 		var debt = 0.0
 
-		payments.forEach { payment -> debt += payment.quantity }
+		payments.forEach { payment ->
+			if (payment.type != PaymentType.SAVE.ordinal) {
+				debt += payment.quantity
+			}
+		}
 
 		return debt
 	}
@@ -54,7 +59,7 @@ class Period(
 		var remainingDebt = 0.0
 
 		payments.forEach { payment ->
-			if (!payment.pay) {
+			if (!payment.pay && payment.type != PaymentType.SAVE.ordinal) {
 				remainingDebt += payment.quantity
 			}
 		}
@@ -64,12 +69,25 @@ class Period(
 
 	@Key(name = "freeMoney", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
 	fun freeMoney(): Double {
-		return 27800 - debt()
+		return (27800 - debt()) - save()
 	}
 
 	@Key(name = "biweekly", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
 	fun biweekly(): Double {
 		return freeMoney() / 2
+	}
+
+	@Key(name = "save", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
+	fun save(): Double {
+		var save = 0.0
+
+		payments.forEach { payment ->
+			if (payment.type == PaymentType.SAVE.ordinal) {
+				save += payment.quantity
+			}
+		}
+
+		return save
 	}
 
 	@Key(name = "enable", autoCall = true, defaultNullValue = DefaultValue.BOOLEAN)

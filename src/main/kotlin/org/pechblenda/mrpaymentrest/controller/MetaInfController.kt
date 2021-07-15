@@ -18,9 +18,9 @@ class MetaInfController(
 	private val response: Response
 ) {
 
-	@GetMapping
+	@GetMapping("/version")
 	fun getAppVersion(): ResponseEntity<Any> {
-		return response.ok("1.0.0");
+		return response.ok("1.1.2");
 	}
 
 }
