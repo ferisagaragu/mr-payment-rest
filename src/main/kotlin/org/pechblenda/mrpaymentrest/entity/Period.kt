@@ -1,21 +1,20 @@
 package org.pechblenda.mrpaymentrest.entity
 
-import org.pechblenda.service.annotation.Key
-import org.pechblenda.service.enum.DefaultValue
-import org.pechblenda.mrpaymentrest.enum.PaymentType
-
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Table
-import javax.persistence.Id
-import javax.persistence.OneToMany
-
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import java.util.UUID
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.OneToMany
+import javax.persistence.Table
+import org.pechblenda.mrpaymentrest.enum.PaymentType
+import org.pechblenda.service.annotation.Key
+import org.pechblenda.service.enum.DefaultValue
 
 @Entity
 @Table(name = "period")
@@ -39,6 +38,11 @@ class Period(
 		this.uuid = UUID.randomUUID()
 		this.date = date
 		this.payments = mutableListOf()
+	}
+
+	@Key(name = "name", autoCall = true, defaultNullValue = DefaultValue.TEXT)
+	fun name(): String {
+		return SimpleDateFormat("MMMMM yyyy", Locale("es", "ES")).format(this.date)
 	}
 
 	@Key(name = "debt", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
