@@ -22,7 +22,7 @@ import org.springframework.web.server.ResponseStatusException
 @RequestMapping(name = "Alert Config", value = ["/rest/alert-config"])
 class AlertConfigController(
 	private val alertConfigService: IAlertConfigService,
-	private val httpExceptionResponse: HttpExceptionResponse,
+	private val httpExceptionResponse: HttpExceptionResponse
 ) {
 
 	@GetMapping

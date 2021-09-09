@@ -7,6 +7,7 @@ import org.pechblenda.mrpaymentrest.repository.IPaymentRepository
 import org.pechblenda.mrpaymentrest.repository.IPeriodRepository
 import org.pechblenda.mrpaymentrest.repository.ISaveRepository
 import org.pechblenda.service.Response
+import org.pechblenda.mrpaymentrest.webhook.SlackAlertMessage
 
 import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.Scheduled
@@ -22,14 +23,12 @@ class PeriodScheduled(
 	private val periodRepository: IPeriodRepository,
 	private val paymentRepository: IPaymentRepository,
 	private val saveRepository: ISaveRepository,
+	private val slackAlert: SlackAlertMessage,
 	private val response: Response
 ) {
 
 	@Scheduled(cron = "0 0 16 15 * *")
-	//@Scheduled(cron = "0 0 0 15 * *")
-	/*@Scheduled(cron = "0 * * * * *")*/
 	fun calculateNextPeriod(): ResponseEntity<Any> {
-		println("paso");
 		if ((Date() >= getMiddleMonth()) && !periodRepository.existsByDate(getNewPeriodDate())) {
 			val period = periodRepository.save(Period(getNewPeriodDate()))
 			val recurrentPayments = paymentRepository.findAllRecurrentByPeriodDate(getBeforeMonth())
@@ -73,6 +72,7 @@ class PeriodScheduled(
 				}
 			}
 
+			slackAlert.onCreatePeriod(period)
 			return response.created()
 		}
 

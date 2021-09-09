@@ -14,4 +14,10 @@ interface IPeriodRepository: JpaRepository<Period, UUID> {
 	@Query("select period from Period period order by period.date desc")
 	override fun findAll(): MutableList<Period>
 
+	@Query(
+		"select sum(payment.quantity) from Payment payment " +
+		"inner join payment.period period where period.uuid = :periodUuid"
+	)
+	fun sumDebtByPeriodUuid(periodUuid: UUID): Double?
+
 }

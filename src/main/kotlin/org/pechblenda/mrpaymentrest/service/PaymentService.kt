@@ -13,6 +13,7 @@ import org.pechblenda.service.helper.EntityParse
 import org.pechblenda.service.helper.Validation
 import org.pechblenda.service.helper.ValidationType
 import org.pechblenda.service.helper.Validations
+import org.pechblenda.mrpaymentrest.webhook.SlackAlertMessage
 
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -27,6 +28,7 @@ import java.util.UUID
 class PaymentService(
 	private val paymentRepository: IPaymentRepository,
 	private val periodRepository: IPeriodRepository,
+	private val slackAlert: SlackAlertMessage,
 	private val response: Response
 ): IPaymentService {
 
@@ -72,20 +74,23 @@ class PaymentService(
 			paymentRequest.monthCount = daysBetween.toInt()
 		}
 
-		paymentRepository.save(paymentRequest)
+		val payment = paymentRepository.save(paymentRequest)
+		slackAlert.onCreatePayment(payment)
 
 		return response.ok()
 	}
 
 	@Transactional
 	override fun updatePayment(request: Request): ResponseEntity<Any> {
-		request.merge<Payment>(
+		val request = request.merge<Payment>(
 			EntityParse(
 				"uuid",
 				paymentRepository,
 				IdType.UUID
 			)
 		)
+
+		slackAlert.onUpdatePayment(request)
 
 		return response.ok()
 	}
@@ -118,6 +123,7 @@ class PaymentService(
 		}
 
 		payment.pay = paymentRequest.pay
+		slackAlert.onSetPaymentPaid(payment)
 
 		return response.ok()
 	}
@@ -129,6 +135,7 @@ class PaymentService(
 		}
 
 		paymentRepository.delete(payment)
+		slackAlert.onDeletePayment(payment)
 
 		return response.ok()
 	}

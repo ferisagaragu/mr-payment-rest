@@ -20,7 +20,7 @@ class MetaInfController(
 
 	@GetMapping("/version")
 	fun getAppVersion(): ResponseEntity<Any> {
-		return response.ok("1.1.2");
+		return response.ok("1.1.3");
 	}
 
 }
