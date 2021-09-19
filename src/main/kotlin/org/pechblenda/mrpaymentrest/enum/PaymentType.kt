@@ -4,5 +4,7 @@ enum class PaymentType {
 	UNIQUE,
 	MONTHLY,
 	RECURRENT,
-	SAVE
+	SAVE,
+	EXTRA,
+	LOAN
 }

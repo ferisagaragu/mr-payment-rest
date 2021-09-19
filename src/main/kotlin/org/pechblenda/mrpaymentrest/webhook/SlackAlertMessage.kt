@@ -74,10 +74,12 @@ class SlackAlertMessage(
 
 	private fun getPaymentTypeName(paymentType: Int): String {
 		return when(paymentType) {
-			PaymentType.UNIQUE.ordinal -> "pago *Unico*"
+			PaymentType.UNIQUE.ordinal -> "pago *Único*"
 			PaymentType.MONTHLY.ordinal -> "pago *Mensual*"
 			PaymentType.RECURRENT.ordinal -> "pago *Recurrente*"
 			PaymentType.SAVE.ordinal -> "*ahorro*"
+			PaymentType.EXTRA.ordinal -> "*dinero extra*"
+			PaymentType.LOAN.ordinal -> "*préstamo*"
 			else -> ""
 		}
 	}
@@ -103,7 +105,7 @@ class SlackAlertMessage(
 
 			val request: HttpEntity<Map<String, Any>> = HttpEntity(data)
 			restTemplate.exchange(
-				"https://hooks.slack.com/services/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",
+				"https://hooks.slack.com/services/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",
 				HttpMethod.POST,
 				request,
 				String::class.java

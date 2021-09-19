@@ -34,7 +34,18 @@ class PaymentService(
 
 	@Transactional(readOnly = true)
 	override fun findAllPaymentsByPeriodUuid(periodUuid: UUID): ResponseEntity<Any> {
-		return response.toListMap(paymentRepository.findAllByPeriodUuid(periodUuid)).ok()
+		val payment = paymentRepository.findAllByPeriodUuid(periodUuid)
+		val period = periodRepository.findById(periodUuid).orElseThrow {
+			BadRequestException("Upss no se encuentra el periodo")
+		}
+		val request = Request()
+		request["totalMoney"] = period.totalMoney()?: 0
+		request["debt"] = period.debt()
+		request["biweekly"] = period.biweekly()
+		request["individual"] = period.individual()
+		request["remainingDebt"] = period.remainingDebt()
+
+		return response.toListMap(payment).ok(request)
 	}
 
 	@Transactional
@@ -53,6 +64,13 @@ class PaymentService(
 				Validation(
 					"type",
 					"Upss el 'type' es requerido",
+					ValidationType.EXIST,
+					ValidationType.NOT_BLANK,
+					ValidationType.NOT_NULL
+				),
+				Validation(
+					"periodUuid",
+					"Upss el 'periodUuid' es requerido",
 					ValidationType.EXIST,
 					ValidationType.NOT_BLANK,
 					ValidationType.NOT_NULL

@@ -3,6 +3,7 @@ package org.pechblenda.mrpaymentrest.controller
 import org.pechblenda.doc.annotation.ApiDocumentation
 import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.mrpaymentrest.service.`interface`.IPeriodService
+import org.pechblenda.mrpaymentrest.scheduled.PeriodScheduled
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -13,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
-
-import java.util.UUID
-import org.pechblenda.mrpaymentrest.scheduled.PeriodScheduled
 
 @CrossOrigin(methods = [
 	RequestMethod.GET,
@@ -39,19 +37,7 @@ class PeriodController(
 		}
 	}
 
-	@GetMapping("/detail/{periodUuid}")
-	@ApiDocumentation(path = "doc/period/find-period-detail.json")
-	fun findPeriodDetail(
-		@PathVariable periodUuid: UUID
-	): ResponseEntity<Any> {
-		return try {
-			periodService.findPeriodDetail(periodUuid)
-		} catch (e: ResponseStatusException) {
-			httpExceptionResponse.error(e)
-		}
-	}
-
-	@PostMapping("/calculate-next")
+	@PostMapping("/calculate-next-period")
 	@ApiDocumentation(path = "doc/period/calculate-next-period.json")
 	fun calculateNextPeriod(): ResponseEntity<Any> {
 		return try {

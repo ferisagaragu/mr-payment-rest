@@ -12,13 +12,14 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.OneToMany
 import javax.persistence.Table
+import javax.persistence.OneToOne
 
 import org.pechblenda.mrpaymentrest.enum.PaymentType
 import org.pechblenda.service.annotation.Key
 import org.pechblenda.service.enum.DefaultValue
+import org.pechblenda.service.helper.ResponseMap
 
 import java.text.SimpleDateFormat
-import javax.persistence.OneToOne
 
 @Entity
 @Table(name = "period")
@@ -55,7 +56,15 @@ class Period(
 
 	@Key(name = "totalMoney", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
 	fun totalMoney(): Double? {
-		return money?.quantity
+		var out = 0.0
+
+		payments.forEach { payment ->
+			if (payment.type == PaymentType.EXTRA.ordinal) {
+				out += payment.quantity
+			}
+		}
+
+		return money?.quantity?.plus(out)
 	}
 
 	@Key(name = "debt", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
@@ -63,7 +72,7 @@ class Period(
 		var debt = 0.0
 
 		payments.forEach { payment ->
-			if (payment.type != PaymentType.SAVE.ordinal) {
+			if (payment.type != PaymentType.EXTRA.ordinal) {
 				debt += payment.quantity
 			}
 		}
@@ -76,7 +85,7 @@ class Period(
 		var remainingDebt = 0.0
 
 		payments.forEach { payment ->
-			if (!payment.pay && payment.type != PaymentType.SAVE.ordinal) {
+			if (!payment.pay && payment.type != PaymentType.EXTRA.ordinal) {
 				remainingDebt += payment.quantity
 			}
 		}
@@ -86,8 +95,7 @@ class Period(
 
 	@Key(name = "freeMoney", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
 	fun freeMoney(): Double {
-		println()
-		return (money?.quantity?.minus(debt()))!! - save()
+		return (money?.quantity?.minus(debt()))!!
 	}
 
 	@Key(name = "biweekly", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
@@ -129,6 +137,34 @@ class Period(
 		}
 
 		return false
+	}
+
+	@Key(name = "detail", autoCall = true, defaultNullValue = DefaultValue.JSON_OBJECT)
+	fun detail(): ResponseMap {
+		val out = ResponseMap()
+		var unique = 0.0
+		var monthly = 0.0
+		var recurrent = 0.0
+
+		payments.forEach { payment ->
+			if (payment.type === PaymentType.UNIQUE.ordinal) {
+				unique += payment.quantity
+			}
+
+			if (payment.type === PaymentType.MONTHLY.ordinal) {
+				monthly += payment.quantity
+			}
+
+			if (payment.type === PaymentType.RECURRENT.ordinal) {
+				recurrent += payment.quantity
+			}
+		}
+
+		out["unique"] = unique
+		out["monthly"] = monthly
+		out["recurrent"] = recurrent
+
+		return out
 	}
 
 }
