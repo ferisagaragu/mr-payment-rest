@@ -43,10 +43,23 @@ class Period(
 		payments = mutableListOf()
 	)
 
-	constructor(date: Date): this() {
+	constructor(date: Date, money: Money): this() {
 		this.uuid = UUID.randomUUID()
 		this.date = date
 		this.payments = mutableListOf()
+		this.money = money
+	}
+
+	fun extra(): Double {
+		var extra = 0.0
+
+		payments.forEach { payment ->
+			if (payment.type == PaymentType.EXTRA.ordinal) {
+				extra += payment.quantity
+			}
+		}
+
+		return extra
 	}
 
 	@Key(name = "name", autoCall = true, defaultNullValue = DefaultValue.TEXT)
@@ -56,15 +69,7 @@ class Period(
 
 	@Key(name = "totalMoney", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
 	fun totalMoney(): Double? {
-		var out = 0.0
-
-		payments.forEach { payment ->
-			if (payment.type == PaymentType.EXTRA.ordinal) {
-				out += payment.quantity
-			}
-		}
-
-		return money?.quantity?.plus(out)
+		return money?.quantity?.plus(extra())
 	}
 
 	@Key(name = "debt", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
@@ -95,7 +100,7 @@ class Period(
 
 	@Key(name = "freeMoney", autoCall = true, defaultNullValue = DefaultValue.NUMBER)
 	fun freeMoney(): Double {
-		return (money?.quantity?.minus(debt()))!!
+		return (totalMoney()?.minus(debt()))!!
 	}
 
 	@Key(name = "biweekly", autoCall = true, defaultNullValue = DefaultValue.NUMBER)

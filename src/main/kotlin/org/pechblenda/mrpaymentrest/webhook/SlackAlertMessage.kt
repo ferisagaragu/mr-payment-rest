@@ -105,7 +105,7 @@ class SlackAlertMessage(
 
 			val request: HttpEntity<Map<String, Any>> = HttpEntity(data)
 			restTemplate.exchange(
-				"https://hooks.slack.com/services/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",
+				"https://hooks.slack.com/services/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",
 				HttpMethod.POST,
 				request,
 				String::class.java

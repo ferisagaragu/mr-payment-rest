@@ -1,5 +1,6 @@
 package org.pechblenda.mrpaymentrest.config
 
+import org.pechblenda.auth.AuthController
 import org.pechblenda.doc.Documentation
 import org.pechblenda.doc.entity.ApiInfo
 import org.pechblenda.mrpaymentrest.controller.AlertConfigController
@@ -30,7 +31,8 @@ class BeanConfig {
 			PeriodController::class,
 			PaymentController::class,
 			SaveController::class,
-			AlertConfigController::class
+			AlertConfigController::class,
+			AuthController::class
 		)
 	}
 

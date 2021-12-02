@@ -14,5 +14,6 @@ class Money(
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	var uuid: UUID,
-	var quantity: Double
+	var quantity: Double,
+	var priority: Int
 )

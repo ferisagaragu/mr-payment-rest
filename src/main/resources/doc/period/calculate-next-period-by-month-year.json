@@ -1,0 +1,34 @@
+{
+  "description": "Servicio para calcular el siguiente periodo manualmente",
+  "authorization": false,
+  "responseOk": {
+    "timestamp": "07-11-2021  16:43:29 p. m.",
+    "status": 200
+  },
+  "responseUnauthorized": {
+    "timestamp": "11-20-2020  16:53:53 p. m.",
+    "status": 401,
+    "error": "UNAUTHORIZED",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  },
+  "pathVariables": [
+    {
+      "name": "month",
+      "value": "",
+      "type": "number",
+      "required": true
+    },{
+      "name": "year",
+      "value": "",
+      "type": "number",
+      "required": true
+    }
+  ]
+}
